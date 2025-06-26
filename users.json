@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1749862901976,
+    "username": "luanregys1",
+    "password": "$2b$10$tQEBdMOjyNAJyFI5Nu2dXeexiZe3WEBpzWzrjqCbspP90/rUYdG2S",
+    "role": "player"
+  },
+  {
+    "id": 1749862914564,
+    "username": "luan1234",
+    "password": "$2b$10$E1phm1oAC3ON/zYZyyqm3.1g/M.1dYAs7PzK66ZNqRU7gtT7djXqy",
+    "role": "player"
+  },
+  {
+    "id": 1749863021945,
+    "username": "regys",
+    "password": "$2b$10$weP4wxlZDPVNESiZXzIEhOdqqGYKOb5mffde0pDSu0ylZKOdrJzVi",
+    "role": "creator"
+  },
+  {
+    "id": 1749863483450,
+    "username": "lima",
+    "password": "$2b$10$eGJpEagl4shD7HYwU5A5G.tmmboM0tSzH3nPMUxR.FJtCqdRLJuJ.",
+    "role": "creator"
+  },
+  {
+    "id": 1749864360958,
+    "username": "lima1",
+    "password": "$2b$10$one8s5/dApEoMDE.Qy3XyuFKcVyEnFr..0fM//ImITmm9DzTQty2i",
+    "role": "creator"
+  },
+  {
+    "id": 1749864766692,
+    "username": "lima123",
+    "password": "$2b$10$tpsXysYoaEca58FenaXfuuLVqdO1XZIoEMBRKUImBPsVnAxw4f4yO",
+    "role": "player"
+  },
+  {
+    "id": 1750789356803,
+    "username": "Luan1234",
+    "password": "$2b$10$4KlSL87ufhryAiJf3o.3EOxp3F3IRO7k9VPAJ8iv6cwPQDymlXaUG",
+    "role": "creator"
+  },
+  {
+    "id": 1750790694107,
+    "username": "luan12345",
+    "password": "$2b$10$kem2ttFqX8Ci5Ba5lDyQMupOwADe2oe8.X03JyuZgVMPwVuU.JkAm",
+    "role": "player"
+  },
+  {
+    "id": 1750790717356,
+    "username": "luanregys12345",
+    "password": "$2b$10$3CX4ge524ffdHpSoT0Snpucrzlfyb9SeaEmQ49DvZ7VbGdzrbn4v6",
+    "role": "player"
+  },
+  {
+    "id": 1750790737374,
+    "username": "Luan123456",
+    "password": "$2b$10$SEXFL3myC0CdTOP0P2zAKuaKyjtDT2kz/1z2nsV26mYvwQGRRZd0W",
+    "role": "player"
+  },
+  {
+    "id": 1750875079856,
+    "username": "luan123455",
+    "password": "$2b$10$hUvtcUZaYecVkMbf4dspf.U8.CmmB7Nr01vlVrwr0ScBMrdPrm1uW",
+    "role": "player"
+  }
+]
