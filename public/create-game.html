@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head><title>Criar Jogo</title></head>
+<body>
+ <h2>Criar Jogo</h2>
+
+ <form id="createGameForm">
+  <input type="text" name="title" placeholder="Título do jogo" required><br><br>
+
+  <label>Tipo do jogo:</label>
+  <select name="type" required>
+    <option value="">Selecione</option>
+    <option value="quiz">Quiz</option>
+    <option value="associacao">Associação</option>
+    <option value="memoria">Jogo da Memória</option>
+  </select><br><br>
+
+  <div id="termsContainer">
+    <div class="termPair">
+      <input type="text" name="term" placeholder="Termo" required>
+      <input type="text" name="definition" placeholder="Definição" required>
+    </div>
+  </div>
+
+  <button type="button" id="addTerm">Adicionar termo + definição</button><br><br>
+
+  <button type="submit">Criar</button>
+</form>
+
+<script>
+  const addTermBtn = document.getElementById('addTerm');
+  const termsContainer = document.getElementById('termsContainer');
+
+  addTermBtn.onclick = () => {
+    const div = document.createElement('div');
+    div.classList.add('termPair');
+    div.innerHTML = `
+      <input type="text" name="term" placeholder="Termo" required>
+      <input type="text" name="definition" placeholder="Definição" required>
+    `;
+    termsContainer.appendChild(div);
+  };
+
+  const form = document.getElementById('createGameForm');
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+
+    const title = form.title.value.trim();
+    const type = form.type.value;
+
+    if (!title) {
+      alert('Informe o título do jogo');
+      return;
+    }
+    if (!type) {
+      alert('Selecione o tipo do jogo');
+      return;
+    }
+
+    const termPairs = [];
+    const termInputs = form.querySelectorAll('input[name="term"]');
+    const defInputs = form.querySelectorAll('input[name="definition"]');
+
+    for(let i = 0; i < termInputs.length; i++) {
+      const term = termInputs[i].value.trim();
+      const definition = defInputs[i].value.trim();
+      if (!term || !definition) {
+        alert('Preencha todos os termos e definições');
+        return;
+      }
+      termPairs.push({ term, definition });
+    }
+
+    const res = await fetch('/games', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, data: termPairs, type })
+    });
+
+    const text = await res.text();
+    alert(text);
+    if (res.ok) {
+      form.reset();
+      // Remove todos os termPairs extras, deixando só o primeiro
+      while (termsContainer.children.length > 1) {
+        termsContainer.removeChild(termsContainer.lastChild);
+      }
+    }
+  };
+</script>
+
+</body>
+</html>

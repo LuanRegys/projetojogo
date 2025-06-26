@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jogos de Memorização</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    header h1 { margin-bottom: 20px; }
+    main p { margin-bottom: 10px; }
+    .game-links a { margin-right: 15px; }
+    #creator-panel { margin-top: 30px; border: 1px solid #ccc; padding: 15px; max-width: 600px; }
+    #pairs div { margin-bottom: 10px; }
+    #pairs input { margin-right: 10px; padding: 5px; }
+    #listaJogos { margin-top: 20px; list-style: none; padding-left: 0; max-width: 600px; }
+    #listaJogos li { margin-bottom: 10px; }
+    #listaJogos button { margin-left: 10px; padding: 5px 10px; cursor: pointer; }
+    #result { margin-top: 10px; color: green; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Bem-vindo aos Jogos</h1>
+  </header>
+
+  <main>
+    <p>Escolha um jogo abaixo para começar:</p>
+    <div class="game-links">
+      <a href="/terms-and-definitions/memory/index.html">Jogo da Memória</a>
+      <a href="/terms-and-definitions/association/index.html">Jogo de Associação</a>
+      <a href="/terms-and-definitions/quiz/index.html">Quiz</a>
+    </div>
+
+    <!-- Painel do Criador -->
+    <div id="creator-panel" style="display: none;">
+      <h2>Criar Novo Jogo</h2>
+      <input type="text" id="title" placeholder="Título do jogo" />
+      <select id="type">
+        <option value="memoria">Jogo da Memória</option>
+        <option value="associacao">Jogo de Associação</option>
+        <option value="quiz">Quiz</option>
+      </select>
+      <div id="pairs">
+        <div>
+          <input type="text" class="term" placeholder="Termo" />
+          <input type="text" class="definition" placeholder="Definição" />
+        </div>
+      </div>
+      <button onclick="addPair()">Adicionar Par</button>
+      <button onclick="salvarJogo()">Salvar Jogo</button>
+      <div id="result"></div>
+    </div>
+
+    <div id="meusJogos">
+      <h2>Meus Jogos Criados</h2>
+      <ul id="listaJogos"></ul>
+    </div>
+    <div id="enter-code-section" style="margin-top: 20px;">
+  <h2>Entrar com Código de Compartilhamento</h2>
+  <input type="text" id="share-code-input" placeholder="Digite o código do jogo" />
+  <button id="enter-code-btn">Entrar</button>
+  <div id="enter-code-message" style="color: red; margin-top: 5px;"></div>
+</div>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2025 - Jogo da Memória</p>
+  </footer>
+
+  <script>
+    async function carregarJogos() {
+      const res = await fetch('/games');
+      const lista = document.getElementById('listaJogos');
+      lista.innerHTML = '';
+      if (!res.ok) {
+        lista.innerHTML = '<li>Erro ao carregar jogos.</li>';
+        return;
+      }
+      const jogos = await res.json();
+
+      if (jogos.length === 0) {
+        lista.innerHTML = '<li>Você ainda não criou nenhum jogo.</li>';
+        return;
+      }
+
+      jogos.forEach(jogo => {
+        const li = document.createElement('li');
+        li.textContent = `${jogo.title} (${jogo.type})`;
+
+        // Botão Jogar
+        const btnJogar = document.createElement('button');
+        btnJogar.textContent = 'Jogar';
+        btnJogar.style.marginLeft = '10px';
+        btnJogar.onclick = () => {
+          let path = '';
+          if (jogo.type === 'memoria') path = 'memory';
+          else if (jogo.type === 'associacao') path = 'association';
+          else if (jogo.type === 'quiz') path = 'quiz';
+
+          const gameId = jogo._id || jogo.id;
+
+          if (gameId) {
+            window.location.href = `/terms-and-definitions/${path}/index.html?gameId=${gameId}`;
+          } else {
+            alert('Erro: ID do jogo não encontrado.');
+          }
+        };
+
+        // Botão Gerar Código para Compartilhar
+        const btnGerarCodigo = document.createElement('button');
+        btnGerarCodigo.textContent = 'Gerar Código';
+        btnGerarCodigo.style.marginLeft = '10px';
+        btnGerarCodigo.onclick = () => {
+          const codigo = jogo._id || jogo.id;
+          if (codigo) {
+            alert('Código para compartilhar:\n\n' + codigo);
+          } else {
+            alert('Não foi possível gerar o código.');
+          }
+        };
+
+        li.appendChild(btnJogar);
+        li.appendChild(btnGerarCodigo);
+        lista.appendChild(li);
+      });
+    }
+
+    function addPair() {
+      const div = document.createElement('div');
+      div.innerHTML = `
+        <input type="text" class="term" placeholder="Termo" />
+        <input type="text" class="definition" placeholder="Definição" />
+      `;
+      document.getElementById('pairs').appendChild(div);
+    }
+
+    async function salvarJogo() {
+      const title = document.getElementById('title').value.trim();
+      const type = document.getElementById('type').value;
+      const terms = document.querySelectorAll('.term');
+      const definitions = document.querySelectorAll('.definition');
+
+      if (!title) {
+        alert('Por favor, preencha o título do jogo.');
+        return;
+      }
+
+      const data = [];
+      for (let i = 0; i < terms.length; i++) {
+        const term = terms[i].value.trim();
+        const def = definitions[i].value.trim();
+        if (term && def) data.push({ term, definition: def });
+      }
+
+      if (data.length === 0) {
+        alert('Adicione pelo menos um par termo-definição.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/games', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, type, data })
+        });
+
+        if (res.ok) {
+          document.getElementById('result').textContent = 'Jogo salvo com sucesso!';
+          carregarJogos();
+          // Limpar campos
+          document.getElementById('title').value = '';
+          document.getElementById('pairs').innerHTML = `<div><input type="text" class="term" placeholder="Termo" /><input type="text" class="definition" placeholder="Definição" /></div>`;
+        } else {
+          const msg = await res.text();
+          alert('Erro ao salvar: ' + msg);
+        }
+      } catch (error) {
+        alert('Erro na comunicação com o servidor.');
+        console.error(error);
+      }
+    }
+
+    // Mostrar painel do criador só para usuários criadores
+    fetch('/me')
+      .then(res => {
+        if (!res.ok) throw new Error('Não autenticado');
+        return res.json();
+      })
+      .then(user => {
+        if (user.role === 'creator') {
+          document.getElementById('creator-panel').style.display = 'block';
+        }
+      })
+      .catch(() => {
+        // Usuário não autenticado ou erro
+        document.getElementById('creator-panel').style.display = 'none';
+      });
+
+    carregarJogos();
+  </script>
+</body>
+</html>
